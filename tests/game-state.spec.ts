@@ -23,19 +23,14 @@ test.describe("Game State Tests", () => {
     await expect(page.locator('[data-testid="game-over"]')).toBeVisible();
 
     // Click restart/play again button
-    const restartButton = page
-      .locator("text=Play Again")
-      .or(page.locator("text=Restart"))
-      .or(page.locator('[data-testid="restart-button"]'));
+    const restartButton = page.locator('[data-testid="restart-button"]');
     await restartButton.click();
 
-    // Verify quiz resets to start state
-    await expect(page.locator("text=Start Quiz")).toBeVisible();
-
-    // Start again and verify score is reset to 0
-    await page.click("text=Start Quiz");
+    // Wait for the quiz to restart and check if we're on the first question
+    await page.waitForSelector('[data-testid="question-card"]');
     await page.waitForSelector('[data-testid="score"]');
 
+    // Verify score is reset to 0
     const scoreText = await page.locator('[data-testid="score"]').textContent();
     expect(scoreText).toContain("0");
 

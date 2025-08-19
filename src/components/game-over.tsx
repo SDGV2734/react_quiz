@@ -11,6 +11,13 @@ export default function GameOver({
   totalQuestions,
 }: GameOverProps) {
   const percentage = Math.round((score / totalQuestions) * 100);
+
+  // Function to handle restart with delay to ensure event is processed
+  const handleRestart = () => {
+    // Call the restart function directly
+    onRestart();
+  };
+
   return (
     <div className="p-8 text-center" data-testid="game-over">
       <Trophy className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
@@ -20,11 +27,11 @@ export default function GameOver({
       </p>
       <p className="mt-2 text-gray-500">({percentage}% correct)</p>
       <button
-        onClick={onRestart}
+        onClick={handleRestart}
         data-testid="restart-button"
-        className="mt-6 inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors≈"
+        className="mt-6 inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
       >
-        Play Again
+        Start Quiz
       </button>
     </div>
   );

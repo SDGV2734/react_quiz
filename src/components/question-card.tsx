@@ -17,8 +17,9 @@ export default function QuestionCard({
 }: QuestionCardProps) {
   const getButtonClass = (index: number): string => {
     if (selectedAnswer === null) return "hover:bg-gray-100";
-    if (index === question.correct) return "bg-green-100 border-green-500";
-    if (selectedAnswer === index) return "bg-red-100 border-red-500";
+    if (index === question.correct)
+      return "bg-green-100 border-green-500 correct";
+    if (selectedAnswer === index) return "bg-red-100 border-red-500 selected";
     return "opacity-50";
   };
 
@@ -42,7 +43,7 @@ export default function QuestionCard({
             onClick={() => selectedAnswer === null && onAnswerSelect(index)}
             className={`w-full p-4 text-left border rounded-lg transition-all duration-300 ${getButtonClass(
               index
-            )}`}
+            )} ${selectedAnswer === index ? "bg-blue-100 selected" : ""}`}
           >
             <div className="flex items-center justify-between">
               <span>{option}</span>
@@ -58,7 +59,12 @@ export default function QuestionCard({
       </div>
 
       {selectedAnswer !== null && (
-        <div className="mt-4 text-center" data-testid="feedback">
+        <div
+          className={`mt-4 text-center ${
+            selectedAnswer === question.correct ? "green success" : "red error"
+          }`}
+          data-testid="feedback"
+        >
           {selectedAnswer === question.correct ? (
             <span className="text-green-600 font-semibold">Correct!</span>
           ) : (

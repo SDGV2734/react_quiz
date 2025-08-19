@@ -1,18 +1,20 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test("has title", async ({ page }) => {
+  // Navigate to our app instead of playwright.dev
+  await page.goto("http://localhost:5173");
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
+  // Expect title to contain "Quiz" or similar
+  await expect(page).toHaveTitle(/Quiz|React/);
 });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test("get started link", async ({ page }) => {
+  // Navigate to our app
+  await page.goto("http://localhost:5173");
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+  // Click the "Start Quiz" button instead
+  await page.getByText("Start Quiz").click();
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  // Expect question card to be visible
+  await expect(page.locator('[data-testid="question-card"]')).toBeVisible();
 });

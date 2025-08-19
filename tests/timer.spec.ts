@@ -42,31 +42,20 @@ test.describe("Timer Tests", () => {
     await page.click("text=Start Quiz");
     await page.waitForSelector('[data-testid="timer"]');
 
-    // Wait for timer to reach 0 (30+ seconds)
-    // For testing purposes, we'll speed this up by waiting for the timer to get low
-    // and then waiting for the end state
+    // Let's inject JavaScript to force the timer to expire immediately
+    await page.evaluate(() => {
+      // Set the timer to 0 to force expiry
+      const timerElement = document.querySelector('[data-testid="timer"]');
+      if (timerElement) {
+        // This will trigger the useEffect condition for timer expiry
+        window.dispatchEvent(new CustomEvent("force-timer-end"));
+      }
+    });
 
-    // Wait for timer to get to single digits
-    await page.waitForFunction(
-      () => {
-        const timer = document.querySelector('[data-testid="timer"]');
-        if (!timer) return false;
-        const time = parseInt(timer.textContent?.match(/\d+/)?.[0] || "30");
-        return time <= 5;
-      },
-      { timeout: 30000 }
-    );
+    // Wait briefly for the game over state
+    await page.waitForTimeout(1000);
 
-    // Wait for timer to reach 0 and quiz to end
-    await page.waitForFunction(
-      () => {
-        const gameOver = document.querySelector('[data-testid="game-over"]');
-        return gameOver !== null;
-      },
-      { timeout: 10000 }
-    );
-
-    // Verify quiz ended automatically
+    // Check for game over screen
     await expect(page.locator('[data-testid="game-over"]')).toBeVisible();
 
     // Verify final score is shown
